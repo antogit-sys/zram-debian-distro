@@ -1,0 +1,74 @@
+%definisce tipo di documento
+\documentclass{article}
+\usepackage{tcolorbox}
+\usepackage{graphicx}
+
+\title{Cos'è la zram e come usarla su sistemi Debian}
+\author{Antonio Perrucci (Mr. Glitch)} 
+
+\begin{document}
+	\maketitle
+	\hrule
+	\newpage
+
+	\section{Avere pochissima ram}
+		\paragraph{Pochissima RAM? Usiamo zRam.} Se abbiamo pochissima  ram risulta  
+		difficile e nello stesso tempo fastidioso aprire più programmi nello stesso tempo
+		perché il nostro computer \textbf{andrà lentissimo} a causa  di sovraccarico della memoria
+		ram e a causa di un sovraccarico della memoria di swap(se ne abbiamo una). 
+		La soluzione per chi non ha possibilità di comprare una nuova ram o per chi è tirchio
+		è solo una! usare la \textbf{ZRAM}  
+	
+	\section{Ma che cos'è  la zram su linux?}
+		\paragraph{zram} la zram precedentemente chiamata \textbf{compcache} è un modulo presente
+		nel kernel linux che va a migliorare le performance del nostro sistema comprimendo alcuni 
+		blocchi di Ram
+
+		\paragraph{Ma come funzion di preciso la  zram?}
+		 Il suo funzionamento è complesso, ma riassumibile in poche righe:  \textit{i dati in RAM vengono compressi} e
+		immagazzinati in una \textbf{partizione swap virtuale caricata in memoria RAM} che occupa fino al 25\% della
+		stessa. Raggiunta la soglia critica i pacchetti vengono compressi al massimo e swappati dentro la zRam, con un 		enorme recupero di prestazioni e di reattività (la compressione/decompressione è circa 20 volte più veloce
+		dell’accesso diretto alla swap sul disco rigido). 
+		In teoria è come aggiungere un modulo di RAM in più della capienza dimezzata rispetto all’originale: su 1GB di
+		RAM si ottengono in totale circa 1,50 GB. \textbf{Attenzione però! Il modulo
+		zRAM funziona solo su macchine che hanno processori non scrausi}. Infatti, quando utilizziamo il modulo,
+		in realtà stiamo sfruttando notevolmente il processore, che quindi dovrà essere impegnato nelle operazioni sia di
+		compressione che di decompressione. Il modulo zRAM è considerato stabile a partire dal kernel 3.14. 
+
+		\section{Passiamo al pratico} per usare la zram si linux ci sono molti modi, noi utilizzeremo il piu semplice e il
+		automatico, ci bastera scrivere sul terminale
+		\begin{tcolorbox}
+                sudo apt install zram-config
+		\end{tcolorbox}
+            per avviarlo ad ogni avvio del sistema digitare il comando 
+            \begin{tcolorbox}
+               sudo systemctl enable zram-config.service 
+		\end{tcolorbox}
+            succettivamente per vedere lo stato del servizio digitare
+            \begin{tcolorbox}
+               systemctl status zram-config.service 
+		\end{tcolorbox}
+
+            \section{Automatizziamo un po il tutto}
+            digitare sul terminale 
+            \begin{tcolorbox}
+             nano \$HOME/.bashrc
+            \end{tcolorbox}
+            è scriviamo alla fine del file:
+            \begin{tcolorbox}
+            alias zstatus="systemcyl status zram-config"
+            \end{tcolorbox}
+
+            \textbf{N.B non ci devono essere spazi tra in più}
+            
+            aprendo una nuova istanza del terminale e digitando lo pseudo-comando zstatus 
+            apparirà nello schermo lo stato del daemon \textbf{zram-config.service} come mostrato in figura \ref{f1}
+            
+            \begin{figure}
+                \centering
+                \includegraphics[scale=1]{image}
+                \caption{status del demone zram-config}
+                \label{f1}
+            \end{figure}       
+            
+\end{document}
